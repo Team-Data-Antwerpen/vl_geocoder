@@ -38,18 +38,19 @@
 
 #main-table td, #main-table th {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 0px;
 }
 
-#main-table tr:nth-child(even){background-color: #f2f2f2;}
+#main-table td input {
+  width: 100%;
+  padding: 1px;
+}
 
-#main-table tr:hover {background-color: #ddd;}
 
 #main-table th {
   position: sticky;
   top: 0;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding: 10px;
   text-align: left;
   background-color: #04AA6D;
   color: white;
