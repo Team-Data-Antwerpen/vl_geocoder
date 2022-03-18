@@ -33,12 +33,14 @@
 #main-table {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
+  table-layout: auto;
   width: 100%;
 }
 
 #main-table td, #main-table th {
   border: 1px solid #ddd;
   padding: 0px;
+  min-width: 60px;
 }
 
 #main-table td input {
@@ -46,12 +48,25 @@
   padding: 1px;
 }
 
-
 #main-table th {
   position: sticky;
   top: 0;
-  padding: 10px;
+  padding: 5px;
   text-align: left;
   background-color: #04AA6D;
   color: white;
+}
+
+#main-table th div {
+  resize: horizontal;
+  min-width: 60px;
+  overflow: hidden;
+}
+
+.found {
+  background-color : #98ecb8; 
+}
+
+.notfound {
+  background-color : #eca998; 
 }
