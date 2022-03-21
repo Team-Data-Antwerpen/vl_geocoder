@@ -2,7 +2,8 @@
 //js
 import { Header } from '../Header/Header'
 import { MainForm } from '../MainForm/MainForm';
-import { BiSelectMultiple } from 'react-icons/bi'
+import { Modal } from '../Modal/Modal'
+import { BiSelectMultiple, BiLayer, BiMap, BiLoader } from 'react-icons/bi'
 import { Component } from 'react';
 //css
 import './App.css';
@@ -11,7 +12,7 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { file_name: '', rows: [], columns: [] };
+    this.state = { file_name: '', rows: [], columns: [] , buzzy : false };
   }
 
   selectAll = () => {
@@ -19,8 +20,8 @@ class App extends Component {
     this.setState({ rows: rows })
   }
 
-  onGeocode_adres = async (rows) => {
-    this.setState({ rows: rows });
+  onGeocode_end = async (rows) => {
+    this.setState({ rows: rows, buzzy : false });
   }
 
   onHandle_NewFile = (cols, rows, file_name) => {
@@ -43,11 +44,13 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+
         <Header>Geocoderen</Header>
         <MainForm handleNewFile={this.handleNewFile} 
                   columns={this.state.columns}  rows={this.state.rows}
+                  onGeocodeStart={() => this.setState({buzzy : true})}
                   onHandleNewFile={this.onHandle_NewFile}
-                  onGeocode={this.onGeocode_adres}  />
+                  onGeocodeEnd={this.onGeocode_end}  />
         {/*TABLE*/}
         <table id="main-table" style={{ visibility: this.state.columns.length > 0 ? 'visible' : 'hidden' }} >
           <tbody>
@@ -81,6 +84,11 @@ class App extends Component {
           </tbody>
         </table>
         {/*/TABLE*/}
+
+        <div className='buzzy-indicator' style={{ visibility: this.state.buzzy? 'visible' : 'hidden' }} > 
+          <BiLoader className='icon-spin' size={70}></BiLoader><br/>
+          De gegevens worden verwerkt.
+        </div>
       </div> );
   }
 }

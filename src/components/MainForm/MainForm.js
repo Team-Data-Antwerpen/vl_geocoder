@@ -1,6 +1,9 @@
+//js
 import { Component } from 'react';
 import { download,  geocode_adres  } from '../sharedUtils';
 import papa from 'papaparse';
+//css
+import './MainForm.css';
 
 class MainForm extends Component {
     constructor(props) {
@@ -34,6 +37,8 @@ class MainForm extends Component {
       }
 
    geocode_adres = async () => {
+        this.props.onGeocodeStart();
+
         let rows = this.props.rows;
         let huisnr = document.getElementById('huisnr').value;
         let straat = document.getElementById('straatnaam').value;
@@ -58,7 +63,7 @@ class MainForm extends Component {
           }
           rows[idx].selected = false;
         }
-        this.props.onGeocode(rows);
+        this.props.onGeocodeEnd(rows);
       }
     
     render() {
