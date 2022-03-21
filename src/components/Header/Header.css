@@ -1,0 +1,26 @@
+.App-header {
+    top: 0;
+    text-align:center;
+    background-color: #ddd;
+    margin: 0px;
+  }
+  
+.App-title-box{
+    vertical-align: middle;
+    padding: 0px;
+  }
+  
+  .App-title {
+    top: 0px;
+    font: 55px Arial, sans-serif;
+    font-weight: bold;
+  }
+  
+  .App-logo  {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 62px;
+    width: 62px;
+  }
+  
