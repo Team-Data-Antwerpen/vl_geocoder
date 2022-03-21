@@ -70,3 +70,11 @@
 .notfound {
   background-color : #eca998; 
 }
+
+.selBtn:hover  {
+  background-color: rgb(101, 184, 112);
+}
+
+.selBtn:active  {
+    background-color: rgb(0, 95, 13);
+}

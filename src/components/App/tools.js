@@ -1,6 +1,4 @@
 
-
-
 async function geocode_adres(adres){
   const geopuntURI = "https://loc.geopunt.be/v4/Location";
   let r = await fetch( `${geopuntURI}?q=${adres}`);
