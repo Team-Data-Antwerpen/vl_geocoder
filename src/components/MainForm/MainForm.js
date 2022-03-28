@@ -1,5 +1,5 @@
 //js
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { download,  geocode_adres  } from '../sharedUtils';
 import papa from 'papaparse';
 //css
@@ -71,7 +71,7 @@ class MainForm extends Component {
         <div className='main-form'>
           <label htmlFor="input_file">Bestand om te geocoderen:&nbsp;</label>
           <input type="file" id="input_file" accept='.csv' name='input_file' onChange={this.handleNewFile}></input>
-          <select name="encoding" id="encoding">
+          <select name="encoding" id="encoding" onChange={this.handleNewFile} >
             <option key="enc-ascii" value="ascii">ASCII</option>
             <option key="enc-utf-8" value="utf-8">UTF-8</option>
           </select>

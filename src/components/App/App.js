@@ -1,10 +1,10 @@
-
 //js
 import { Header } from '../Header/Header'
 import { MainForm } from '../MainForm/MainForm';
-import { Modal } from '../Modal/Modal'
+import { Modal } from '../Modal/Modal';
+import Map from '../Map/Map';
 import { BiSelectMultiple, BiLayer, BiMap, BiLoader } from 'react-icons/bi'
-import { Component } from 'react';
+import React, { Component } from 'react';
 //css
 import './App.css';
 
@@ -12,12 +12,12 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { file_name: '', rows: [], columns: [] , buzzy : false };
+    this.state = { file_name: '', rows: [], columns: [] , buzzy : false, xy: [] };
   }
 
   selectAll = () => {
     let rows = this.state.rows.map(row => { row.selected = !row.selected; return row });
-    this.setState({ rows: rows })
+    this.setState({ rows: rows });
   }
 
   onGeocode_end = async (rows) => {
@@ -44,6 +44,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+
+        <Modal visible={true} >
+          <Map onMapClick={pt => (this.setState({ xy: pt }) )} />
+          <div><br/>Aanklikte locatie: {this.state.xy.join(" , ")}</div>
+        </Modal>
 
         <Header>Geocoderen</Header>
         <MainForm handleNewFile={this.handleNewFile} 
