@@ -7,6 +7,7 @@ import {ScaleLine} from 'ol/control';
 import TileLayer from 'ol/layer/Tile';
 
 import WMTS from 'ol/source/WMTS';
+import OSM from 'ol/source/OSM'
 import WMTSTileGrid from 'ol/tilegrid/WMTS';
 import {getTopLeft, getWidth} from 'ol/extent';
 import {get as getProjection, transform} from 'ol/proj';
@@ -44,8 +45,10 @@ const grb =  new WMTS({
     wrapX: true,
     });
 
+const osm = new OSM()
+
 const background = new TileLayer({
-        source: grb
+        source: osm
       });
 
 //initial View 

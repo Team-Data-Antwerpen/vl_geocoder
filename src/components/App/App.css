@@ -19,11 +19,35 @@
   border: 1px solid #ddd;
   padding: 0px;
   min-width: 60px;
+  vertical-align: middle;
+  text-align: center;
 }
 
-#main-table td input {
+#main-table td > input[type=text] {
   width: 100%;
   padding: 1px;
+}
+
+#main-table td > input[type=checkbox] {
+  width: 14px;
+  height: 14px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-left: 5px;
+}
+
+.pushBtn {
+  padding: 0px;
+  border: 2px solid #5c5c5c;
+  border-radius: 3px;
+}
+
+.pushBtn:hover  {
+  background-color: rgb(150, 170, 150);
+}
+
+.pushBtn:active  {
+  background-color: rgb(155, 155, 155);
 }
 
 #main-table th {

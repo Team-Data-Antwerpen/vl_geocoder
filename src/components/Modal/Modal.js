@@ -14,11 +14,11 @@ class Modal extends Component {
         }
       }
 
-    onOKClick =() => {
-        if(this.props.onClose) this.props.onClose(true);
-        this.setState({visible: false});
+    onOK =() => {
+      if(this.props.onClose) this.props.onClose(true);
+      this.setState({visible: false});
     }
-   
+
     onCancel =() => {
         if(this.props.onClose) this.props.onClose(false);
         this.setState({visible: false});
@@ -26,15 +26,18 @@ class Modal extends Component {
 
     render(){
         return (
-            <div className="modal" style={{display: this.state.visible ? "block":"none"}} >
+            <div className="modal" style={{visibility: this.state.visible ? "visible":"hidden"}} >
 
             <div className="modal-content">
-              <span className="modal-close" onClick={() => this.setState({visible: false} )} >&times;</span>
-              <p>{this.props.children}</p>
-              <div className='modal-footer'>
-                {/* <button onClick={ this.onOKClick }>OK</button> */}
-                <span className='modal-btn' onClick={ this.onCancel }>Sluiten</span>
+              <span className="close" onClick={() => this.setState({visible: false} )} >&times;</span>
+              <div className="content-wrap">
+                 {this.props.children}
               </div>
+              <div className='modal-footer'>
+                <span className='modal-btn' onClick={ this.onOK }>OK</span>
+                <span className='modal-btn' onClick={ this.onCancel }>Annuleren</span>
+              </div>
+            
             </div>
 
           </div>   

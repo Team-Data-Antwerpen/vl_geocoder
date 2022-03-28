@@ -3,7 +3,7 @@ import { Header } from '../Header/Header'
 import { MainForm } from '../MainForm/MainForm';
 import { Modal } from '../Modal/Modal';
 import Map from '../Map/Map';
-import { BiSelectMultiple, BiLayer, BiMap, BiLoader } from 'react-icons/bi'
+import { BiSelectMultiple, BiLayer, BiLoader } from 'react-icons/bi'
 import React, { Component } from 'react';
 //css
 import './App.css';
@@ -12,7 +12,8 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { file_name: '', rows: [], columns: [] , buzzy : false, xy: [] };
+    this.state = { modelShown: false, file_name:'', rows: [], columns: [],
+                   buzzy: false, selected: null, xy:[149500,169450] };
   }
 
   selectAll = () => {
@@ -31,7 +32,8 @@ class App extends Component {
   onCellChange = (cellId, rowIdx, colIdx) => {
     let cell = document.getElementById(cellId).value;
     let rows = this.state.rows;
-    rows[rowIdx].data[this.state.columns[colIdx].value] = cell;
+    let colName = this.state.columns[colIdx].value;
+    rows[rowIdx].data[colName] = cell;
     this.setState({ rows: rows });
   }
 
@@ -41,13 +43,32 @@ class App extends Component {
     this.setState({ rows: rows });
   }
 
+  onMapOpen = rowIdx => {
+    let x = this.state.rows[rowIdx].data.x;
+    let y = this.state.rows[rowIdx].data.y;
+    this.setState({modelShown: true, selected: rowIdx, xy: [x,y] }) 
+  }
+
+  onModelClosed = ok => {
+    if(ok){
+       let xy = this.state.xy;
+       let rows = this.state.rows;
+       let rowIdx = this.state.selected;
+       rows[rowIdx].data.x = xy[0].toFixed(2);
+       rows[rowIdx].data.y = xy[1].toFixed(2);
+       rows[rowIdx].data.status = 'manueel';
+       this.setState({ rows: rows });
+    }
+    this.setState({modelShown: false , selected: null }) 
+  }
+
   render() {
     return (
       <div className="App">
-
-        <Modal visible={true} >
-          <Map onMapClick={pt => (this.setState({ xy: pt }) )} />
-          <div><br/>Aanklikte locatie: {this.state.xy.join(" , ")}</div>
+        
+        <Modal visible={this.state.modelShown} onClose={this.onModelClosed} >
+          <Map center={this.state.xy} visible={this.state.modelShown}
+               onMapClick={pt => (this.setState({ xy: pt }))} />
         </Modal>
 
         <Header>Geocoderen</Header>
@@ -62,7 +83,7 @@ class App extends Component {
             <tr key='head'>
               <th key="checkbox" >
                 <div title='Alles Selecteren' className='selBtn' onClick={this.selectAll} >
-                  <BiSelectMultiple />&nbsp;Alles
+                  <BiSelectMultiple /> Alles
                 </div>
               </th>
               {this.state.columns.map(o => {
@@ -73,8 +94,12 @@ class App extends Component {
               let values = Object.values(row.data);
               return (<tr key={row.id} >
                 <td key={`chk${row.id}`} >
-                  <input type="checkbox" checked={row.selected}
-                    onChange={e => this.onSelectionChange(rowIdx, e.target.checked)} />
+                  <div >
+                    <BiLayer  title='Op kaart bewerken' className='pushBtn'
+                              onClick={() => this.onMapOpen(rowIdx)} />
+                    <input type="checkbox" checked={row.selected}
+                      onChange={e => (this.onSelectionChange(rowIdx, e.target.checked) )} />
+                  </div>   
                 </td>
 
                 {values.map((cell, cellIdx) => (
@@ -84,7 +109,8 @@ class App extends Component {
                       onChange={() => this.onCellChange(`cell-${row.id}-${cellIdx}`, rowIdx, cellIdx)}
                       type="text" id={`cell-${row.id}-${cellIdx}`} value={cell} />
                   </td>
-                ))} </tr>)
+                ))}
+                </tr>)
             })}
           </tbody>
         </table>
