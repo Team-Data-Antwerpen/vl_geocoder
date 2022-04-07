@@ -5,11 +5,11 @@ import { BiLoader } from 'react-icons/bi'
 const Loader = props => {
     return (
     <div className='buzzy-indicator' style={{
-      visibility: props.buzzy ? 'visible' : 'hidden'
+       visibility:  props.buzzy ? 'visible' : 'hidden'
     }}>
       <BiLoader className='icon-spin' size={70}></BiLoader><br />
-      {props.children}
+      <span>{props.children}</span>
     </div>)
   }
   
-  export {Loader};
+export {Loader};
