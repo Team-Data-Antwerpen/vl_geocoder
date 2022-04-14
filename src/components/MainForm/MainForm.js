@@ -1,6 +1,6 @@
 //js
 import React, { Component } from 'react';
-import { download,  geocode_adres  } from '../sharedUtils';
+import { download,  geocode_adres, geocode_ar  } from '../sharedUtils';
 import papa from 'papaparse';
 //css
 import './MainForm.css';
@@ -42,19 +42,26 @@ class MainForm extends Component {
         let rows = this.props.rows;
         let huisnr = document.getElementById('huisnr').value;
         let straat = document.getElementById('straatnaam').value;
-        let pc = document.getElementById('pc_gemeente').value;
-        
+        let pc = document.getElementById('pc').value;
+        let gemeente = document.getElementById('gemeente').value;
+        let geocoder = document.getElementById('geolocator').value;
+
         for (let idx = 0; idx < rows.length; idx++) {
           if (!rows[idx].selected) { continue }
           let row = rows[idx].data
-          let adres = `${straat != '_' ? row[straat] : ''} ${huisnr != '_' ? row[huisnr] : ''} ${pc != '_' ? ', ' + row[pc] : ''}`;
-          let loc = await geocode_adres(adres);
+          let loc = null;
+         
+          console.log(geocoder)
+          if(geocoder === 'ar'){ 
+              loc = await geocode_ar(row[straat], row[huisnr], row[pc], row[gemeente]);
+          } 
+          else {
+              loc = await geocode_adres(row[straat], row[huisnr], row[pc], row[gemeente]);
+          }
           if (loc != null) {
-            let x = loc.Location.X_Lambert72;
-            let y = loc.Location.Y_Lambert72;
-            rows[idx].data.status = loc.LocationType;
-            rows[idx].data.x = x;
-            rows[idx].data.y = y;
+            rows[idx].data.status = loc.status;
+            rows[idx].data.x = loc.x;
+            rows[idx].data.y = loc.y;
           }
           else {
             rows[idx].data.x = -1;
@@ -74,34 +81,47 @@ class MainForm extends Component {
           <select name="encoding" id="encoding" onChange={this.handleNewFile} >
             <option key="enc-ascii" value="ascii">ASCII</option>
             <option key="enc-utf-8" value="utf-8">UTF-8</option>
-          </select>
-          <br />
+          </select> <br />
           <label htmlFor="straatnaam">Straatnaam:&nbsp;</label>
           <select name="straatnaam" id="straatnaam">
-            <option key="straatnaam_blanc" value='_'>&lt;geen&gt;</option>
-            {this.props.columns.map(o => {
+            <option key="straatnaam_blanc" >&lt;geen&gt;</option>
+            {this.props.columns.map( (o,i) => {
+              if(i < 3) {return}
               return <option key={"straatnaam" + o.id} value={o.value}>{o.value}</option>;
             })}
-          </select>
-          <br />
+          </select><br/>
           <label htmlFor="huisnr">Huisnummer:&nbsp;</label>
           <select name="huisnr" id="huisnr">
-            <option key="huisnr_blanc" value='_'>&lt;geen&gt;</option>
-            {this.props.columns.map(o => {
+            <option key="huisnr_blanc">&lt;geen&gt;</option>
+            {this.props.columns.map( (o,i) => {
+              if(i < 3) {return}
               return <option key={"huisnr" + o.id} value={o.value}>{o.value}</option>;
             })}
-          </select>
-          <br />
-          <label htmlFor="pc_gemeente">Postcode of Gemeente:&nbsp;</label>
-          <select name="pc_gemeente" id="pc_gemeente">
-            <option key="pc_gemeente_blanc" value='_'>&lt;geen&gt;</option>
-            {this.props.columns.map(o => {
-              return <option key={"pc_gemeente" + o.id} value={o.value}>{o.value}</option>;
+          </select><br/>
+          <label htmlFor="pc">Postcode:&nbsp;</label>
+          <select name="pc" id="pc">
+            <option key="pc_blanc">&lt;geen&gt;</option>
+            {this.props.columns.map( (o,i) => {
+              if(i < 3) {return}
+              return <option key={"pc_" + o.id} value={o.value}>{o.value}</option>;
+            })}
+          </select><br/>
+          <label htmlFor="gemeente">Gemeente:&nbsp;</label>
+          <select name="gemeente" id="gemeente">
+            <option key="gemeente_blanc">&lt;geen&gt;</option>
+            {this.props.columns.map( (o,i) => {
+              if(i < 3) {return}
+              return <option key={"gemeente_" + o.id} value={o.value}>{o.value}</option>;
             })}
           </select>
           <center>
             <button onClick={this.geocode_adres}>Selectie Geocoderen</button>
             <button onClick={this.download_csv}>Download CSV</button>
+            <label htmlFor="geolocator">&nbsp;Geocoder:&nbsp;</label>
+            <select name="geolocator" id="geolocator" defaultValue='geoloc'>
+                <option key='geolocator0' value='geoloc'>CRAB geolocation</option>
+                <option key='geolocator1' value='ar'>Adressenregister</option>
+            </select>
           </center>
         </div>
       );
