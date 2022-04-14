@@ -51,7 +51,6 @@ class MainForm extends Component {
           let row = rows[idx].data
           let loc = null;
          
-          console.log(geocoder)
           if(geocoder === 'ar'){ 
               loc = await geocode_ar(row[straat], row[huisnr], row[pc], row[gemeente]);
           } 
