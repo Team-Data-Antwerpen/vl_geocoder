@@ -1,6 +1,6 @@
 //js
 import React, { Component } from 'react';
-import { download,  geocode_adres, geocode_ar  } from '../sharedUtils';
+import { download,  geocode_adres, geocode_ar, geocode_osm } from '../sharedUtils';
 import papa from 'papaparse';
 //css
 import './MainForm.css';
@@ -8,7 +8,7 @@ import './MainForm.css';
 class MainForm extends Component {
     constructor(props) {
       super(props);
-      this.file = ''
+      this.file = '';
     }
     download_csv = () => {
         if (this.file == '') { return }
@@ -54,6 +54,9 @@ class MainForm extends Component {
           if(geocoder === 'ar'){ 
               loc = await geocode_ar(row[straat], row[huisnr], row[pc], row[gemeente]);
           } 
+          else if (geocoder === 'osm') {
+              loc = await geocode_osm(row[straat], row[huisnr], row[pc], row[gemeente]);
+          }
           else {
               loc = await geocode_adres(row[straat], row[huisnr], row[pc], row[gemeente]);
           }
@@ -117,9 +120,10 @@ class MainForm extends Component {
             <button onClick={this.geocode_adres}>Selectie Geocoderen</button>
             <button onClick={this.download_csv}>Download CSV</button>
             <label htmlFor="geolocator">&nbsp;Geocoder:&nbsp;</label>
-            <select name="geolocator" id="geolocator" defaultValue='geoloc'>
+            <select name="geolocator" id="geolocator" defaultValue='geoloc' >
                 <option key='geolocator0' value='geoloc'>CRAB geolocation</option>
                 <option key='geolocator1' value='ar'>Adressenregister</option>
+                <option key='geolocator2' value='osm'>Openstraatmap Nominatim</option>
             </select>
           </center>
         </div>

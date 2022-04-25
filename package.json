@@ -1,33 +1,23 @@
 {
   "name": "geocoder-app",
   "version": "0.1.0",
+  "packageManager": "yarn@3.2.0",
+  "devDependencies": {
+    "@parcel/packager-raw-url": "2.5.0",
+    "@parcel/transformer-webmanifest": "2.5.0",
+    "@parcel/service-worker": "^2.5.0",
+    "parcel": "^2.5.0"
+  },
   "dependencies": {
-    "ol": "^6.13.0",
-    "papaparse": "^5.3.1",
+    "ol": "^6.14.1",
+    "papaparse": "^5.3.2",
     "proj4": "^2.8.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-icons": "^4.3.1",
-    "react-scripts": "5.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-icons": "^4.3.1"
   },
   "scripts": {
-    "start": "parcel src/index.html",
-    "build": "rm ./docs/* &parcel build src/index.html --public-url . --dist-dir docs"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "parcel": "^2.3.2",
-    "process": "^0.11.10"
+    "start": "yarn parcel src/index.html",
+    "build": "rm ./docs/* &yarn parcel build src/index.html --public-url . --dist-dir docs"
   }
 }
