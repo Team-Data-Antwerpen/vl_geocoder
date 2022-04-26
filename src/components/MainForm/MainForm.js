@@ -77,56 +77,67 @@ class MainForm extends Component {
     
     render() {
       return (
-        <div className='main-form'>
-          <label htmlFor="input_file">Bestand om te geocoderen:&nbsp;</label>
-          <input type="file" id="input_file" accept='.csv' name='input_file' onChange={this.handleNewFile}></input>
-          <select name="encoding" id="encoding" onChange={this.handleNewFile} >
-            <option key="enc-ascii" value="ascii">ASCII</option>
-            <option key="enc-utf-8" value="utf-8">UTF-8</option>
-          </select> <br />
-          <label htmlFor="straatnaam">Straatnaam:&nbsp;</label>
-          <select name="straatnaam" id="straatnaam">
-            <option key="straatnaam_blanc" >&lt;geen&gt;</option>
-            {this.props.columns.map( (o,i) => {
-              if(i < 3) {return}
-              return <option key={"straatnaam" + o.id} value={o.value}>{o.value}</option>;
-            })}
-          </select><br/>
-          <label htmlFor="huisnr">Huisnummer:&nbsp;</label>
-          <select name="huisnr" id="huisnr">
-            <option key="huisnr_blanc">&lt;geen&gt;</option>
-            {this.props.columns.map( (o,i) => {
-              if(i < 3) {return}
-              return <option key={"huisnr" + o.id} value={o.value}>{o.value}</option>;
-            })}
-          </select><br/>
-          <label htmlFor="pc">Postcode:&nbsp;</label>
-          <select name="pc" id="pc">
-            <option key="pc_blanc">&lt;geen&gt;</option>
-            {this.props.columns.map( (o,i) => {
-              if(i < 3) {return}
-              return <option key={"pc_" + o.id} value={o.value}>{o.value}</option>;
-            })}
-          </select><br/>
-          <label htmlFor="gemeente">Gemeente:&nbsp;</label>
-          <select name="gemeente" id="gemeente">
-            <option key="gemeente_blanc">&lt;geen&gt;</option>
-            {this.props.columns.map( (o,i) => {
-              if(i < 3) {return}
-              return <option key={"gemeente_" + o.id} value={o.value}>{o.value}</option>;
-            })}
-          </select>
-          <center>
+      <div className='main-form'>
+        <div style={{marginLeft: 10}} >
+        <label htmlFor="input_file">Bestand om te geocoderen:&nbsp;</label>
+        <input type="file" id="input_file" accept='.csv' name='input_file' onChange={this.handleNewFile}></input>
+        <select name="encoding" id="encoding" onChange={this.handleNewFile} >
+          <option key="enc-ascii" value="ascii">ASCII</option>
+          <option key="enc-utf-8" value="utf-8">UTF-8</option>
+        </select> 
+        </div>
+
+        <table style={{marginLeft: 8}}>
+        <tbody>
+          <tr>
+            <td><label htmlFor="straatnaam">Straatnaam:&nbsp;</label>
+              <select name="straatnaam" id="straatnaam">
+                <option key="straatnaam_blanc" >&lt;geen&gt;</option>
+                {this.props.columns.map( (o,i) => {
+                  if(i < 3) {return}
+                  return <option key={"straatnaam" + o.id} value={o.value}>{o.value}</option>;
+                })}
+              </select></td>
+            <td><label htmlFor="huisnr">Huisnummer:&nbsp;</label>
+              <select name="huisnr" id="huisnr">
+                <option key="huisnr_blanc">&lt;geen&gt;</option>
+                {this.props.columns.map( (o,i) => {
+                  if(i < 3) {return}
+                  return <option key={"huisnr" + o.id} value={o.value}>{o.value}</option>;
+                })}
+              </select></td>
+          </tr><tr> 
+            <td><label htmlFor="pc">Postcode:&nbsp;</label>
+              <select name="pc" id="pc">
+                <option key="pc_blanc">&lt;geen&gt;</option>
+                {this.props.columns.map( (o,i) => {
+                  if(i < 3) {return}
+                  return <option key={"pc_" + o.id} value={o.value}>{o.value}</option>;
+                })}
+              </select></td>
+            <td><label htmlFor="gemeente">Gemeente:&nbsp;</label>
+              <select name="gemeente" id="gemeente">
+                <option key="gemeente_blanc">&lt;geen&gt;</option>
+                {this.props.columns.map( (o,i) => {
+                  if(i < 3) {return}
+                  return <option key={"gemeente_" + o.id} value={o.value}>{o.value}</option>;
+                })}
+              </select></td>
+          </tr>
+         </tbody>
+        </table>
+
+        <center>
             <button onClick={this.geocode_adres}>Selectie Geocoderen</button>
             <button onClick={this.download_csv}>Download CSV</button>
             <label htmlFor="geolocator">&nbsp;Geocoder:&nbsp;</label>
             <select name="geolocator" id="geolocator" defaultValue='geoloc' >
                 <option key='geolocator0' value='geoloc'>CRAB geolocation</option>
-                <option key='geolocator1' value='ar'>Adressenregister</option>
+                <option key='geolocator1' value='ar'>Vlaams Adressenregister</option>
                 <option key='geolocator2' value='osm'>Openstraatmap Nominatim</option>
             </select>
-          </center>
-        </div>
+        </center>
+      </div>
       );
     }
   }

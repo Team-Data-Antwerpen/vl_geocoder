@@ -31,7 +31,7 @@ async function geocode_osm(straat, huisnr, pc, gemeente){
       let status = `https://www.openstreetmap.org/${loc.osm_type}/${loc.osm_id}`;
 
       return {
-        x: xy[0] , y: xy[1] , status: status , adres: loc.display_name
+        x: xy[0].toFixed(2) , y: xy[1].toFixed(2) , status: status , adres: loc.display_name
       }    
     }    
     else return {

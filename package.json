@@ -1,6 +1,7 @@
 {
   "name": "geocoder-app",
   "version": "0.1.0",
+  "license" : "MIT",
   "packageManager": "yarn@3.2.0",
   "devDependencies": {
     "@parcel/packager-raw-url": "2.5.0",
