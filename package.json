@@ -1,6 +1,6 @@
 {
   "name": "geocoder-app",
-  "version": "0.1.0",
+  "version": "1.0s.0",
   "license" : "MIT",
   "packageManager": "yarn@3.2.0",
   "devDependencies": {
