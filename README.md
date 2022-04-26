@@ -6,7 +6,7 @@ This allow you to geocode a csv-file with FLemish adresses using different geoco
 - CRAB Geolocation: <https://overheid.vlaanderen.be/crab-geolocation>
 - Or you can pinpoint the address manually on a OSM-map.
 
-## installation
+## Installation
 
 The compile this tool you need nodejs and yarn. 
 
@@ -42,13 +42,18 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
-## deployment
+## Deployment
 
 To deploy to github pages, just make a build and commit it to the github-repo:
 
-´´´
+```
 npm run build
 git commit -a -m "New build"
 git push 
 ```
+
 The result will be available on <https://team-data-antwerpen.github.io/vl_geocoder/> afher a few minutes. 
+
+## Demo
+
+![](images/geocoder.gif "Csv-bestand geocoderen.")
