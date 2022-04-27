@@ -5,14 +5,24 @@ import { Modal } from '../Modal/Modal';
 import { Table } from '../Table/Table';
 import { Map } from '../Map/Map';
 import React, { Component } from 'react';
+
+import {getInitialRows, saveRowState} from './persistent'
 //css
 import './App.css';
 
 class App extends Component {
   constructor(props) {
     super(props);
+
+    let initialRows = getInitialRows();
+    let initialCols = [];
+    if (initialRows.length > 0){
+      let initialKeys = Object.keys( initialRows[0].data );
+      initialCols = initialKeys.map((e, i) => ({ id: `head${i}`, value: e }))
+    }
+
     this.state = {
-       modelShown: false, file_name: '', rows: [], columns: [],
+       modelShown: false, file_name: '', rows: initialRows, columns: initialCols,
        selected: null, xy: [149500, 169450]
     };
   }
@@ -28,6 +38,11 @@ class App extends Component {
       rows[idx] = row;
       this.setState({rows: rows});
     }
+  }
+
+  componentDidUpdate () {
+      let rows = this.state.rows.map(e => e.data)
+      saveRowState(rows);
   }
 
   onHandle_NewFile = (cols, rows, file_name) => {

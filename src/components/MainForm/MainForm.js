@@ -83,7 +83,7 @@ class MainForm extends Component {
       return (
       <div className='main-form'>
         <div style={{marginLeft: 10}} >
-        <label htmlFor="input_file">Bestand om te geocoderen:&nbsp;</label>
+        <label htmlFor="input_file">Bestand om te geocoderen (max 5MB):&nbsp;</label>
         <input type="file" id="input_file" accept='.csv' name='input_file'
                disabled={this.state.buzzy} onChange={this.handleNewFile}></input>
         <select name="encoding" id="encoding" disabled={this.state.buzzy}
