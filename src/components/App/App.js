@@ -2,7 +2,6 @@
 import { Header } from '../Header/Header'
 import { MainForm } from '../MainForm/MainForm';
 import { Modal } from '../Modal/Modal';
-import { Loader } from '../Loader/Loader';
 import { Table } from '../Table/Table';
 import { Map } from '../Map/Map';
 import React, { Component } from 'react';
@@ -13,8 +12,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modelShown: false, file_name: '', rows: [], columns: [],
-      buzzy: false, selected: null, xy: [149500, 169450]
+       modelShown: false, file_name: '', rows: [], columns: [],
+       selected: null, xy: [149500, 169450]
     };
   }
 
@@ -23,8 +22,12 @@ class App extends Component {
     this.setState({ rows: rows });
   }
 
-  onGeocode_end = async (rows) => {
-    this.setState({ rows: rows, buzzy: false });
+  onGeocode = async (idx, row) => {
+    if(row){
+      let rows = this.state.rows;
+      rows[idx] = row;
+      this.setState({rows: rows});
+    }
   }
 
   onHandle_NewFile = (cols, rows, file_name) => {
@@ -76,9 +79,8 @@ class App extends Component {
         <Header>Geocoderen</Header>
         <MainForm handleNewFile={this.handleNewFile}
                   columns={this.state.columns} rows={this.state.rows}
-                  onGeocodeStart={() => this.setState({ buzzy: true })}
                   onHandleNewFile={this.onHandle_NewFile}
-                  onGeocodeEnd={this.onGeocode_end} />
+                  onGeocode={this.onGeocode} />
 
         <Table selectAll={this.selectAll} 
                columns={this.state.columns} 
@@ -86,8 +88,6 @@ class App extends Component {
                onMapOpen={this.onMapOpen} 
                onSelectionChange={this.onSelectionChange} 
                onCellChange={this.onCellChange} />
-
-        <Loader buzzy={this.state.buzzy}>De gegevens worden verwerkt</Loader>
       </div>
     )
   }

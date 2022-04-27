@@ -8,7 +8,7 @@ const Loader = props => {
        visibility:  props.buzzy ? 'visible' : 'hidden'
     }}>
       <BiLoader className='icon-spin' size={70}></BiLoader><br />
-      <span>{props.children}</span>
+      {props.children}
     </div>)
   }
   

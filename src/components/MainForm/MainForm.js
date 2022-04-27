@@ -1,7 +1,9 @@
 //js
 import React, { Component } from 'react';
+import {FaRegStopCircle} from 'react-icons/fa'
 import { download,  geocode_adres, geocode_ar, geocode_osm } from '../sharedUtils';
 import papa from 'papaparse';
+import { Loader } from '../Loader/Loader';
 //css
 import './MainForm.css';
 
@@ -9,6 +11,7 @@ class MainForm extends Component {
     constructor(props) {
       super(props);
       this.file = '';
+      this.state = {buzzy: false}
     }
     download_csv = () => {
         if (this.file == '') { return }
@@ -37,8 +40,7 @@ class MainForm extends Component {
       }
 
    geocode_adres = async () => {
-        this.props.onGeocodeStart();
-
+        this.setState({buzzy: true });
         let rows = this.props.rows;
         let huisnr = document.getElementById('huisnr').value;
         let straat = document.getElementById('straatnaam').value;
@@ -71,8 +73,10 @@ class MainForm extends Component {
             rows[idx].data.status = 'Niet gevonden';
           }
           rows[idx].selected = false;
+          this.props.onGeocode(idx, rows[idx]);
+          if (!this.state.buzzy) {break}
         }
-        this.props.onGeocodeEnd(rows);
+        this.setState({buzzy: false});
       }
     
     render() {
@@ -80,8 +84,10 @@ class MainForm extends Component {
       <div className='main-form'>
         <div style={{marginLeft: 10}} >
         <label htmlFor="input_file">Bestand om te geocoderen:&nbsp;</label>
-        <input type="file" id="input_file" accept='.csv' name='input_file' onChange={this.handleNewFile}></input>
-        <select name="encoding" id="encoding" onChange={this.handleNewFile} >
+        <input type="file" id="input_file" accept='.csv' name='input_file'
+               disabled={this.state.buzzy} onChange={this.handleNewFile}></input>
+        <select name="encoding" id="encoding" disabled={this.state.buzzy}
+                onChange={this.handleNewFile} >
           <option key="enc-ascii" value="ascii">ASCII</option>
           <option key="enc-utf-8" value="utf-8">UTF-8</option>
         </select> 
@@ -128,16 +134,25 @@ class MainForm extends Component {
         </table>
 
         <center>
-            <button onClick={this.geocode_adres}>Selectie Geocoderen</button>
-            <button onClick={this.download_csv}>Download CSV</button>
+            <button onClick={this.geocode_adres} disabled={this.state.buzzy} >Selectie Geocoderen</button>
+            <button onClick={this.download_csv} disabled={this.state.buzzy} >Download CSV</button>
             <label htmlFor="geolocator">&nbsp;Geocoder:&nbsp;</label>
-            <select name="geolocator" id="geolocator" defaultValue='geoloc' >
+            <select name="geolocator" id="geolocator" defaultValue='geoloc' disabled={this.state.buzzy} >
                 <option key='geolocator0' value='geoloc'>CRAB geolocation</option>
                 <option key='geolocator1' value='ar'>Vlaams Adressenregister</option>
-                <option key='geolocator2' value='osm'>Openstraatmap Nominatim</option>
+                <option key='geolocator2' value='osm'>Openstreetmap Nominatim</option>
             </select>
         </center>
+        <Loader buzzy={this.state.buzzy}>
+          <div>
+          <button onClick={() => this.setState({buzzy: false})} title='Stoppen' >
+              <FaRegStopCircle size={14} style={{color:'red'}} />Stoppen
+          </button><br/>
+            De gegevens worden verwerkt
+          </div>
+        </Loader>
       </div>
+
       );
     }
   }
