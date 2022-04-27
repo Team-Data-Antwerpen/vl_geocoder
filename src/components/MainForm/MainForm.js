@@ -134,7 +134,7 @@ class MainForm extends Component {
             <select name="geolocator" id="geolocator" defaultValue='geoloc' >
                 <option key='geolocator0' value='geoloc'>CRAB geolocation</option>
                 <option key='geolocator1' value='ar'>Vlaams Adressenregister</option>
-                <option key='geolocator2' value='osm'>Openstraatmap Nominatim</option>
+                <option key='geolocator2' value='osm'>OpenStreetMap Nominatim</option>
             </select>
         </center>
       </div>
