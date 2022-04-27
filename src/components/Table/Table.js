@@ -5,8 +5,21 @@ import './Table.css'
 class Table extends Component {
     constructor(props) {
       super(props);
+      this.mouseDown = false;
     }
   
+    drag(rowIdx, target){
+      if(this.mouseDown){
+        target.checked = !target.checked;
+        this.props.onSelectionChange(rowIdx, target.checked);
+      }
+    }
+
+    componentDidMount (){
+      document.body.onmousedown = ()=> (this.mouseDown = true)
+      document.body.onmouseup = ()=> (this.mouseDown = false)
+    }
+
     render() {
       return (
         <table id="main-table" style={{
@@ -29,7 +42,10 @@ class Table extends Component {
                 <td key={`chk${row.id}`}>
                   <div>
                     <BiLayer title='Op kaart bewerken' className='pushBtn' onClick={() => this.props.onMapOpen(rowIdx)} />
-                    <input type="checkbox" checked={row.selected} onChange={e => this.props.onSelectionChange(rowIdx, e.target.checked)} />
+                    <input type="checkbox"  
+                        checked={row.selected} 
+                        onMouseOver={e => this.drag(rowIdx, e.target)}
+                        onChange={e => this.props.onSelectionChange(rowIdx, e.target.checked)} />
                   </div>
                 </td>
   
