@@ -14,7 +14,9 @@ class MainForm extends Component {
       this.state = {buzzy: false}
     }
     download_csv = () => {
-        if (this.file == '') { return }
+        if (this.file == '') { 
+          this.file = 'file.csv';
+        }
         let rows = this.props.rows.map(e => e.data);
         let fname = "XY" + this.file;
         download(fname, papa.unparse(rows, { delimiter: ";", }));
