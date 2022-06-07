@@ -1,6 +1,6 @@
 //js
 import React, { Component } from 'react';
-import {FaRegStopCircle} from 'react-icons/fa'
+import {FaRegStopCircle, FaTrash, FaSearchLocation, FaDownload} from 'react-icons/fa'
 import { download,  geocode_adres, geocode_ar, geocode_osm } from '../sharedUtils';
 import papa from 'papaparse';
 import { Loader } from '../Loader/Loader';
@@ -21,7 +21,6 @@ class MainForm extends Component {
         let fname = "XY" + this.file;
         download(fname, papa.unparse(rows, { delimiter: ";", }));
       }
-
     handleNewFile = () => {
         const selectedFile = document.getElementById('input_file').files[0];
         const encoding = document.getElementById('encoding').value;
@@ -40,8 +39,7 @@ class MainForm extends Component {
         });
         this.props.onHandleNewFile(cols, rows, this.file_name)
       }
-
-   geocode_adres = async () => {
+    geocode_adres = async () => {
         this.setState({buzzy: true });
         let rows = this.props.rows;
         let huisnr = document.getElementById('huisnr').value;
@@ -49,6 +47,7 @@ class MainForm extends Component {
         let pc = document.getElementById('pc').value;
         let gemeente = document.getElementById('gemeente').value;
         let geocoder = document.getElementById('geolocator').value;
+        let crs = document.getElementById('crsSel').value;
 
         for (let idx = 0; idx < rows.length; idx++) {
           if (!rows[idx].selected) { continue }
@@ -56,13 +55,13 @@ class MainForm extends Component {
           let loc = null;
          
           if(geocoder === 'ar'){ 
-              loc = await geocode_ar(row[straat], row[huisnr], row[pc], row[gemeente]);
+              loc = await geocode_ar(row[straat], row[huisnr], row[pc], row[gemeente], crs);
           } 
           else if (geocoder === 'osm') {
-              loc = await geocode_osm(row[straat], row[huisnr], row[pc], row[gemeente]);
+              loc = await geocode_osm(row[straat], row[huisnr], row[pc], row[gemeente], crs);
           }
           else {
-              loc = await geocode_adres(row[straat], row[huisnr], row[pc], row[gemeente]);
+              loc = await geocode_adres(row[straat], row[huisnr], row[pc], row[gemeente], crs);
           }
           if (loc != null) {
             rows[idx].data.status = loc.status;
@@ -80,11 +79,14 @@ class MainForm extends Component {
         }
         this.setState({buzzy: false});
       }
-    
+    clean = () =>{
+      let cols = ["x", "y", "status"].map((e, i) => ({ id: `head${i}`, value: e }));
+      this.props.onHandleNewFile(cols, [], 'Geen file ingeladen')
+      }
     render() {
       return (
-      <div className='main-form'>
-        <div style={{marginLeft: 10}} >
+      <>
+        <div id='fileselect'>
         <label htmlFor="input_file">Bestand om te geocoderen (max 5MB):&nbsp;</label>
         <input type="file" id="input_file" accept='.csv' name='input_file'
                disabled={this.state.buzzy} onChange={this.handleNewFile}></input>
@@ -95,7 +97,7 @@ class MainForm extends Component {
         </select> 
         </div>
 
-        <table style={{marginLeft: 8}}>
+        <table id='colselect'>
         <tbody>
           <tr>
             <td><label htmlFor="straatnaam">Straatnaam:&nbsp;</label>
@@ -135,16 +137,30 @@ class MainForm extends Component {
          </tbody>
         </table>
 
-        <center>
-            <button onClick={this.geocode_adres} disabled={this.state.buzzy} >Selectie Geocoderen</button>
-            <button onClick={this.download_csv} disabled={this.state.buzzy} >Download CSV</button>
+        <div id='tools'>
+            <button onClick={this.geocode_adres} disabled={this.state.buzzy} title='Selectie geocoderen' > 
+                <FaSearchLocation size={14} />&nbsp;Geocoderen
+            </button>
+            <button onClick={this.download_csv} disabled={this.state.buzzy} title="Downloaden als CSV" >
+              <FaDownload size={14} />
+            </button>
+            <button onClick={this.clean} disabled={this.state.buzzy} title='Leegmaken' >
+                <FaTrash size={14} />
+            </button>
             <label htmlFor="geolocator">&nbsp;Geocoder:&nbsp;</label>
             <select name="geolocator" id="geolocator" defaultValue='geoloc' disabled={this.state.buzzy} >
                 <option key='geolocator0' value='geoloc'>CRAB geolocation</option>
                 <option key='geolocator1' value='ar'>Vlaams Adressenregister</option>
                 <option key='geolocator2' value='osm'>Openstreetmap Nominatim</option>
             </select>
-        </center>
+            <label htmlFor="crsSel">&nbsp;CRS:&nbsp;</label>
+            <select name="crsSel" id="crsSel" defaultValue='EPSG:31370' disabled={this.state.buzzy} >
+                <option key='WGS 1984 (lat/long)' value='EPSG:4326'>WGS 1984 (lat/long)</option>
+                <option key='Belgisch Lambert 1972' value='EPSG:31370'>Belgisch Lambert 1972</option>
+                <option key='Belgisch Lambert 2008' value='EPSG:3812'>Belgisch Lambert 2008</option>
+                <option key='Webmercator' value='EPSG:3857'>Webmercator</option>
+            </select>
+        </div>
         <Loader buzzy={this.state.buzzy}>
           <div>
           <button onClick={() => this.setState({buzzy: false})} title='Stoppen' >
@@ -153,10 +169,10 @@ class MainForm extends Component {
             De gegevens worden verwerkt
           </div>
         </Loader>
-      </div>
+      </>
 
       );
-    }
+      }
   }
   
   export {MainForm};

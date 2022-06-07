@@ -6,7 +6,9 @@ import { Table } from '../Table/Table';
 import { Map } from '../Map/Map';
 import React, { Component } from 'react';
 
-import {getInitialRows, saveRowState} from './persistent'
+import {transform} from 'ol/proj';
+
+import {getInitialRows, saveRowState, saveSettings, initSettings} from './persistent'
 //css
 import './App.css';
 
@@ -20,11 +22,15 @@ class App extends Component {
       let initialKeys = Object.keys( initialRows[0].data );
       initialCols = initialKeys.map((e, i) => ({ id: `head${i}`, value: e }))
     }
-
     this.state = {
        modelShown: false, file_name: '', rows: initialRows, columns: initialCols,
-       selected: null, xy: [149500, 169450]
+       selected: null, xy: [490488,6649695]
     };
+    
+  }
+
+  componentDidMount () {
+    initSettings();
   }
 
   selectAll = () => {
@@ -41,8 +47,9 @@ class App extends Component {
   }
 
   componentDidUpdate () {
-      let rows = this.state.rows.map(e => e.data)
-      saveRowState(rows);
+    let rows = this.state.rows.map(e => e.data);
+    saveRowState(rows);      
+    saveSettings();
   }
 
   onHandle_NewFile = (cols, rows, file_name) => {
@@ -64,18 +71,27 @@ class App extends Component {
   }
 
   onMapOpen = rowIdx => {
-    let x = this.state.rows[rowIdx].data.x;
-    let y = this.state.rows[rowIdx].data.y;
-    this.setState({ modelShown: true, selected: rowIdx, xy: [x, y] })
+    let crs = document.getElementById('crsSel').value;
+    let rows = this.state.rows;
+    let x = parseFloat( rows[rowIdx].data.x);
+    let y = parseFloat( rows[rowIdx].data.y);
+    console.log(x,y)
+    if( !isNaN(x) && !isNaN(y)  ){
+      let xy = transform([x,y], crs, 'EPSG:3857');
+      this.setState({xy: xy})
+      console.log(this.state.xy)
+    }
+    this.setState({ modelShown: true, selected: rowIdx })
   }
 
   onModelClosed = ok => {
     if (ok) {
-      let xy = this.state.xy;
+      let crs = document.getElementById('crsSel').value;
+      let xy = transform(this.state.xy, 'EPSG:3857', crs);
       let rows = this.state.rows;
       let rowIdx = this.state.selected;
-      rows[rowIdx].data.x = xy[0].toFixed(2);
-      rows[rowIdx].data.y = xy[1].toFixed(2);
+      rows[rowIdx].data.x = xy[0];
+      rows[rowIdx].data.y = xy[1];
       rows[rowIdx].data.status = 'manueel';
       this.setState({ rows: rows });
     }
@@ -87,8 +103,7 @@ class App extends Component {
       <div className="App">
 
         <Modal visible={this.state.modelShown} onClose={this.onModelClosed} >
-          <Map center={this.state.xy} visible={this.state.modelShown}
-            onMapClick={pt => (this.setState({ xy: pt }))} />
+          <Map center={this.state.xy}  onMapClick={pt => (this.setState({ xy: pt }))} />
         </Modal>
 
         <Header>Geocoderen</Header>

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import {initMap, viewer, merc2lb72, lb72toMerc, marker} from './initMap';
+import {initMap, viewer, marker} from './initMap';
+
 //css
 import 'ol/ol.css'; 
 import './Map.css';
@@ -11,24 +12,21 @@ class Map extends Component {
         this.state.map.on('singleclick', e => {
             if(props.onMapClick){
                marker.setPosition(e.coordinate);
-               let pt = merc2lb72(e.coordinate);  
-               props.onMapClick( pt );
+               props.onMapClick( e.coordinate );
             }
           })
-    }
-
-    componentDidUpdate(prevProps ){
-        if (this.props !== prevProps && this.props.visible) {
-           //viewer.setCenter(this.props.center)
-        }  
     }
 
     componentDidMount() {
        let target = document.getElementById("olmap");
        this.state.map.setTarget(target);
-       viewer.setCenter( lb72toMerc( this.props.center ));
+       viewer.setCenter( this.props.center );
        marker.setElement( document.getElementById('marker') );
        marker.setPosition( this.props.center );
+     }
+
+     componentDidUpdate(){
+        marker.setPosition( this.props.center );
      }
 
     render() { 

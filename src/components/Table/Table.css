@@ -42,8 +42,8 @@
 }
 
 #main-table th {
-  position: sticky;
-  top: 0;
+  /* position: sticky;
+  top: 0; */
   padding: 5px;
   text-align: left;
   background-color: #04AA6D;

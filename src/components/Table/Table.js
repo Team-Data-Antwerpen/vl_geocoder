@@ -23,8 +23,7 @@ class Table extends Component {
     render() {
       return (
         <table id="main-table" style={{
-          visibility: this.props.columns.length > 0 ? 'visible' : 'hidden'
-        }}>
+            visibility: this.props.columns.length > 0 ? 'visible' : 'hidden' }}>
           <tbody>
             <tr key='head'>
               <th key="checkbox">
@@ -43,8 +42,7 @@ class Table extends Component {
                   <div>
                     <BiLayer title='Op kaart bewerken' className='pushBtn' onClick={() => this.props.onMapOpen(rowIdx)} />
                     <input type="checkbox"  
-                        checked={row.selected} 
-                        onMouseOver={e => this.drag(rowIdx, e.target)}
+                        checked={row.selected}  onMouseOver={e => this.drag(rowIdx, e.target)}
                         onChange={e => this.props.onSelectionChange(rowIdx, e.target.checked)} />
                   </div>
                 </td>
