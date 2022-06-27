@@ -31,10 +31,11 @@ class MainForm extends Component {
       }
     processCsv = csv => {
         let xyCols = ["x", "y", "status"].concat(Object.keys(csv.data[0]));
+        xyCols = [...new Set(xyCols)]; //make unique
         let cols = xyCols.map((e, i) => ({ id: `head${i}`, value: e }));
     
-        let rows = csv.data.map((e, i) => {
-          let row = Object.assign({ x: '', y: '', status: '' }, e);
+        let rows = csv.data.map((row, i) => {
+          row =  Object.assign( { x: '', y: '', status: '' }, row);
           return { id: `row${i}`, selected: false, data: row }
         });
         this.props.onHandleNewFile(cols, rows, this.file_name)
@@ -80,8 +81,7 @@ class MainForm extends Component {
         this.setState({buzzy: false});
       }
     clean = () =>{
-      let cols = ["x", "y", "status"].map((e, i) => ({ id: `head${i}`, value: e }));
-      this.props.onHandleNewFile(cols, [], 'Geen file ingeladen')
+      this.props.onHandleNewFile([], [], 'Geen file ingeladen')
       }
     render() {
       return (
