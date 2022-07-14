@@ -1,6 +1,6 @@
 //js
 import React, { Component } from 'react';
-import {FaRegStopCircle, FaTrash, FaSearchLocation, FaDownload} from 'react-icons/fa'
+import {FaRegStopCircle, FaTrash, FaSearchLocation, FaSearchPlus, FaDownload, FaSave} from 'react-icons/fa'
 import { download,  geocode_adres, geocode_ar, geocode_osm } from '../sharedUtils';
 import papa from 'papaparse';
 import { Loader } from '../Loader/Loader';
@@ -40,7 +40,7 @@ class MainForm extends Component {
         });
         this.props.onHandleNewFile(cols, rows, this.file_name)
       }
-    geocode_adres = async () => {
+    geocode_adres = async (all) => {
         this.setState({buzzy: true });
         let rows = this.props.rows;
         let huisnr = document.getElementById('huisnr').value;
@@ -49,9 +49,11 @@ class MainForm extends Component {
         let gemeente = document.getElementById('gemeente').value;
         let geocoder = document.getElementById('geolocator').value;
         let crs = document.getElementById('crsSel').value;
+        let idx_range = Array(rows.length).keys()
 
-        for (let idx = 0; idx < rows.length; idx++) {
-          if (!rows[idx].selected) { continue }
+        for await (const idx of idx_range) {
+          if (!rows[idx].selected && !all) { continue }
+
           let row = rows[idx].data
           let loc = null;
          
@@ -138,14 +140,20 @@ class MainForm extends Component {
         </table>
 
         <div id='tools'>
-            <button onClick={this.geocode_adres} disabled={this.state.buzzy} title='Selectie geocoderen' > 
-                <FaSearchLocation size={14} />&nbsp;Geocoderen
+            <button onClick={() => this.geocode_adres(1)} disabled={this.state.buzzy} title='Alles geocoderen' > 
+                <FaSearchPlus size={14} />&nbsp;Alles Geocoderen
+            </button>
+            <button onClick={() => this.geocode_adres(0)} disabled={this.state.buzzy} title='Selectie geocoderen' > 
+                <FaSearchLocation size={14} />&nbsp;Selectie Geocoderen
+            </button>
+            <button onClick={() => this.props.onSave() } disabled={this.state.buzzy} title='Opslaan' > 
+                <FaSave size={14} />&nbsp;
             </button>
             <button onClick={this.download_csv} disabled={this.state.buzzy} title="Downloaden als CSV" >
               <FaDownload size={14} />
             </button>
             <button onClick={this.clean} disabled={this.state.buzzy} title='Leegmaken' >
-                <FaTrash size={14} />
+               <FaTrash size={14} />
             </button>
             <label htmlFor="geolocator">&nbsp;Geocoder:&nbsp;</label>
             <select name="geolocator" id="geolocator" defaultValue='geoloc' disabled={this.state.buzzy} >

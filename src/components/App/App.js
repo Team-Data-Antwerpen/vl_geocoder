@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 
 import {transform} from 'ol/proj';
 
-import {getInitialRows, saveRowState, saveSettings, initSettings} from './persistent'
+import {getInitialRows, saveRowState, saveSettings, initSettings} from '../persistent'
 //css
 import './App.css';
 
@@ -46,10 +46,11 @@ class App extends Component {
     }
   }
 
-  componentDidUpdate () {
-    let rows = this.state.rows.map(e => e.data);
-    saveRowState(rows);      
+  onSave = () => {
+    let rows = this.state.rows.map(e => e.data);  
+    saveRowState(rows);
     saveSettings();
+    console.log('save')
   }
 
   onHandle_NewFile = (cols, rows, file_name) => {
@@ -107,10 +108,10 @@ class App extends Component {
         </Modal>
 
         <Header>Geocoderen</Header>
-        <MainForm handleNewFile={this.handleNewFile}
-                  columns={this.state.columns} rows={this.state.rows}
+        <MainForm columns={this.state.columns} rows={this.state.rows}
                   onHandleNewFile={this.onHandle_NewFile}
-                  onGeocode={this.onGeocode} />
+                  onGeocode={this.onGeocode}
+                  onSave={this.onSave} />
 
         <Table selectAll={this.selectAll} 
                columns={this.state.columns} 
