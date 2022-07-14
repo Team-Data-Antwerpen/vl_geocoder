@@ -14,7 +14,7 @@
 # production
 /build
 /dist
-
+/testdata
 
 # misc
 .DS_Store
