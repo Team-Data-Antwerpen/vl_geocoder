@@ -1,7 +1,7 @@
 //js
 import React, { Component } from 'react';
 import {FaRegStopCircle, FaTrash, FaSearchLocation, FaSearchPlus, FaDownload, FaSave} from 'react-icons/fa'
-import { download,  geocode_adres, geocode_ar, geocode_osm } from '../sharedUtils';
+import { download,  geocode_adres, geocode_ar, geocode_osm, geocode_ant } from '../sharedUtils';
 import papa from 'papaparse';
 import { Loader } from '../Loader/Loader';
 //css
@@ -11,8 +11,9 @@ class MainForm extends Component {
     constructor(props) {
       super(props);
       this.file = '';
-      this.state = {buzzy: false}
+      this.state = {buzzy: false, geocoder: 'geoloc', crs: 'EPSG:4326'}
     }
+
     download_csv = () => {
         if (this.file == '') { 
           this.file = 'file.csv';
@@ -21,6 +22,7 @@ class MainForm extends Component {
         let fname = "XY" + this.file;
         download(fname, papa.unparse(rows, { delimiter: ";", }));
       }
+
     handleNewFile = () => {
         const selectedFile = document.getElementById('input_file').files[0];
         const encoding = document.getElementById('encoding').value;
@@ -29,6 +31,7 @@ class MainForm extends Component {
           papa.parse(selectedFile, { header: true, encoding: encoding, complete: this.processCsv });
         }
       }
+
     processCsv = csv => {
         let xyCols = ["x", "y", "status"].concat(Object.keys(csv.data[0]));
         xyCols = [...new Set(xyCols)]; //make unique
@@ -40,6 +43,7 @@ class MainForm extends Component {
         });
         this.props.onHandleNewFile(cols, rows, this.file_name)
       }
+
     geocode_adres = async (all) => {
         this.setState({buzzy: true });
         let rows = this.props.rows;
@@ -47,8 +51,8 @@ class MainForm extends Component {
         let straat = document.getElementById('straatnaam').value;
         let pc = document.getElementById('pc').value;
         let gemeente = document.getElementById('gemeente').value;
-        let geocoder = document.getElementById('geolocator').value;
-        let crs = document.getElementById('crsSel').value;
+        let geocoder = this.state.geocoder;
+        let crs = this.state.crs;
         let idx_range = Array(rows.length).keys()
 
         for await (const idx of idx_range) {
@@ -62,6 +66,9 @@ class MainForm extends Component {
           } 
           else if (geocoder === 'osm') {
               loc = await geocode_osm(row[straat], row[huisnr], row[pc], row[gemeente], crs);
+          }
+          else if (geocoder  === 'ant'){
+              loc = await geocode_ant(row[straat], row[huisnr], row[pc], row[gemeente], crs);
           }
           else {
               loc = await geocode_adres(row[straat], row[huisnr], row[pc], row[gemeente], crs);
@@ -82,9 +89,19 @@ class MainForm extends Component {
         }
         this.setState({buzzy: false});
       }
+
+    geocoderChanged =  e => {
+      this.setState({geocoder: e.target.value});
+    }
+
+    crsChanged =  e => {
+      this.setState({crs: e.target.value});
+    }
+
     clean = () =>{
       this.props.onHandleNewFile([], [], 'Geen file ingeladen')
-      }
+    }
+
     render() {
       return (
       <>
@@ -120,15 +137,15 @@ class MainForm extends Component {
               </select></td>
           </tr><tr> 
             <td><label htmlFor="pc">Postcode:&nbsp;</label>
-              <select name="pc" id="pc">
+              <select name="pc" id="pc" >
                 <option key="pc_blanc">&lt;geen&gt;</option>
                 {this.props.columns.map( (o,i) => {
                   if(i < 3) {return}
                   return <option key={"pc_" + o.id} value={o.value}>{o.value}</option>;
                 })}
               </select></td>
-            <td><label htmlFor="gemeente">Gemeente:&nbsp;</label>
-              <select name="gemeente" id="gemeente">
+            <td><label htmlFor="gemeente">{this.state.geocoder === 'ant' ? 'Antwerps District':'Gemeente'}:&nbsp;</label>
+              <select name="gemeente" id="gemeente" >
                 <option key="gemeente_blanc">&lt;geen&gt;</option>
                 {this.props.columns.map( (o,i) => {
                   if(i < 3) {return}
@@ -156,13 +173,20 @@ class MainForm extends Component {
                <FaTrash size={14} />
             </button>
             <label htmlFor="geolocator">&nbsp;Geocoder:&nbsp;</label>
-            <select name="geolocator" id="geolocator" defaultValue='geoloc' disabled={this.state.buzzy} >
-                <option key='geolocator0' value='geoloc'>CRAB geolocation</option>
-                <option key='geolocator1' value='ar'>Vlaams Adressenregister</option>
-                <option key='geolocator2' value='osm'>Openstreetmap Nominatim</option>
+            <select name="geolocator" id="geolocator" onChange={this.geocoderChanged}
+                    value={this.state.geocoder} disabled={this.state.buzzy} >
+                <option key='geolocator1' value='ar'
+                     title='Beperkt tot Vlaanderen' >Vlaams Adressenregister</option>
+                <option key='geolocator2' value='osm'
+                     title='Beperkt tot België' >Openstreetmap Nominatim</option>
+                <option key='geolocator3' value='ant' 
+                     title='Beperkt Antwerpen' >Stad Antwerpen</option>
+                <option key='geolocator0' value='geoloc'
+                     title='Beperkt tot Vlaanderen en Brussel' >CRAB geolocation</option>
             </select>
             <label htmlFor="crsSel">&nbsp;CRS:&nbsp;</label>
-            <select name="crsSel" id="crsSel" defaultValue='EPSG:31370' disabled={this.state.buzzy} >
+            <select name="crsSel" id="crsSel" onChange={this.crsChanged}
+                    value={this.state.crs} disabled={this.state.buzzy} >
                 <option key='WGS 1984 (lat/long)' value='EPSG:4326'>WGS 1984 (lat/long)</option>
                 <option key='Belgisch Lambert 1972' value='EPSG:31370'>Belgisch Lambert 1972</option>
                 <option key='Belgisch Lambert 2008' value='EPSG:3812'>Belgisch Lambert 2008</option>

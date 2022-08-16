@@ -4,6 +4,7 @@ This allow you to geocode a csv-file with FLemish adresses using different geoco
 - OSM Nominatim <https://nominatim.org/>
 - Vlaamse adressenregister: <https://www.vlaanderen.be/digitaal-vlaanderen/onze-oplossingen/gebouwen-en-adressenregister#informatie-voor-gebruikers>
 - CRAB Geolocation: <https://overheid.vlaanderen.be/crab-geolocation>
+- The Antwerp Location Picker Service: https://locationpicker-app1-p.antwerpen.be/ 
 - Or you can pinpoint the address manually on a OSM-map.
 
 ## Installation

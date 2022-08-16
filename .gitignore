@@ -7,6 +7,7 @@
 /.parcel-cache
 .parcel-cache
 .yarn
+.yarnrc.yml
 
 # testing
 /coverage

@@ -26,6 +26,39 @@ proj4.defs([
 ]);
 register(proj4);
 
+async function geocode_ant(straat, huisnr, pc=2000, district='Antwerpen', crs='EPSG:31370'){
+  if( !straat || !huisnr ){
+    return {x: -1, y: -1, status: 'straat en huisnummer mogen niet leeg zijn', adres: null }
+  }
+  const ant_URI = `https://locationpicker-app1-p.antwerpen.be/api/v2/addresses`;
+  let rjs; 
+  let q = `${ant_URI}?streetname=${encodeURIComponent(straat)}&housenumber=${encodeURIComponent(huisnr)}`;
+
+  try {
+     let r = await fetch(q);
+     rjs = await r.json();
+  } 
+  catch (error) {
+      console.error(error);
+      return {x: -1, y: -1, status: 'error', adres: null }
+  }
+
+  if( rjs && rjs.length > 0){
+    let loc = rjs.find( e => { 
+        return  parseInt(e.municipalityPost.postCode) == parseInt(pc) || 
+          e.municipalityPost.antwerpDistrict.toUpperCase() == district.toUpperCase().trim() }) 
+     || rjs[0];
+    let xy = transform([loc.addressPosition.lambert72.x , loc.addressPosition.lambert72.y], "EPSG:31370",  crs);
+    let status = `${ant_URI}/${loc.addressRegId}`;
+
+    return {
+      x: xy[0] , y: xy[1] , status: status , adres: loc.label
+    }    
+  }    
+  else return {
+    x: -1, y: -1, status: "adres niet gevonden", adres: null
+  }
+}
 
 async function geocode_osm(straat, huisnr, pc, gemeente, crs='EPSG:31370'){
     const osm_URI = `https://nominatim.openstreetmap.org/search`;
@@ -36,10 +69,10 @@ async function geocode_osm(straat, huisnr, pc, gemeente, crs='EPSG:31370'){
     try {
        let r = await fetch( 
         `${osm_URI}?q=${encodeURIComponent(q)}&countrycodes=be&format=json` );
-      console.log(`${osm_URI}?q=${q}&countrycodes=be&format=json`)
        rjs = await r.json();
     } 
     catch (error) {
+        console.error(error);
         return {x: -1, y: -1, status: 'error', adres: null }
     }
 
@@ -125,4 +158,4 @@ function download(filename, text) {
     document.body.removeChild(element);
   }
 
-export {download, geocode_adres, geocode_ar, geocode_osm }
+export {download, geocode_adres, geocode_ar, geocode_osm, geocode_ant }

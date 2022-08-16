@@ -37,7 +37,7 @@ class Table extends Component {
             </tr>
             {this.props.rows.map((row, rowIdx) => {
               let values = Object.values(row.data);
-              return <tr key={row.id}>
+              return <tr key={row.id} className={ row.selected ? 'selectedrow': null }>
                 <td key={`chk${row.id}`}>
                   <div>
                     <BiLayer title='Op kaart bewerken' className='pushBtn' onClick={() => this.props.onMapOpen(rowIdx)} />
