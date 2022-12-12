@@ -1,11 +1,10 @@
 //js
-import { Header } from '../Header/Header'
+import { Header } from '../Header/Header';
 import { MainForm } from '../MainForm/MainForm';
 import { Modal } from '../Modal/Modal';
 import { Table } from '../Table/Table';
 import { Map } from '../Map/Map';
 import React, { Component } from 'react';
-
 import {transform} from 'ol/proj';
 
 import {getInitialRows, saveRowState, saveSettings, initSettings} from '../persistent'

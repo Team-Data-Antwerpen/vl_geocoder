@@ -11,12 +11,15 @@
     "process": "^0.11.10"
   },
   "dependencies": {
+    "@a-ui/core": "^6.1.1",
+    "@acpaas-ui/react-components": "^6.4.1",
     "ol": "^6.14.1",
     "papaparse": "^5.3.2",
     "proj4": "^2.8.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-icons": "^4.3.1"
+    "react-icons": "^4.3.1",
+    "regenerator-runtime": "^0.13.11"
   },
   "scripts": {
     "start": "yarn parcel src/index.html",

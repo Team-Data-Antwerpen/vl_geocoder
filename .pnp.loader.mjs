@@ -162,7 +162,7 @@ async function getSource$1(urlString, context, defaultGetSource) {
   if ((url == null ? void 0 : url.protocol) !== `file:`)
     return defaultGetSource(urlString, context, defaultGetSource);
   return {
-    source: await fs.promises.readFile(fileURLToPath(url), `utf8`)
+    source: await fs.promises.readFile(fileURLToPath(url), `utf8`), shortCircuit: true
   };
 }
 
@@ -176,8 +176,7 @@ async function load$1(urlString, context, defaultLoad) {
     return defaultLoad(urlString, context, defaultLoad);
   return {
     format,
-    source: await fs.promises.readFile(filePath, `utf8`),
-	shortCircuit: true
+    source: await fs.promises.readFile(filePath, `utf8`), shortCircuit: true
   };
 }
 
@@ -227,8 +226,7 @@ async function resolve$1(originalSpecifier, context, defaultResolver) {
     resultURL.hash = url.hash;
   }
   return {
-    url: resultURL.href,
-    shortCircuit: true
+    url: resultURL.href, shortCircuit: true
   };
 }
 

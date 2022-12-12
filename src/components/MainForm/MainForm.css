@@ -1,15 +1,9 @@
 
-#fileselect {
- margin-left: 10px;
-}
-
-#colselect {
-  margin-left: 8px;
-}
 
 #tools {
   background-color: rgb(231, 249, 231);
   position: sticky;
   top: 0;
-  text-align: center;
+  padding-left: 30px;
+  text-align: left;
 }
