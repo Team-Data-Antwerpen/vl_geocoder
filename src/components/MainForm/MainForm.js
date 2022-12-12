@@ -1,7 +1,7 @@
 //js
 import React, { Component } from 'react';
 import {FaRegStopCircle, FaTrash, FaSearchLocation, FaSearchPlus, FaDownload, FaSave} from 'react-icons/fa'
-import { download,  geocode_adres, geocode_ar, geocode_osm, geocode_ant } from '../sharedUtils';
+import { download,  listGeocoder } from '../sharedUtils';
 import papa from 'papaparse';
 import { Loader } from '../Loader/Loader';
 //css
@@ -11,7 +11,10 @@ class MainForm extends Component {
     constructor(props) {
       super(props);
       this.file = '';
-      this.state = {buzzy: false, geocoder: 'geoloc', crs: 'EPSG:4326'}
+      this.state = {buzzy: false, geocoder: '', geocoders: [], crs: 'EPSG:4326'}
+      listGeocoder().then( geocoderList =>
+        this.setState({geocoders: geocoderList , geocoder: geocoderList[0]['id'] })
+      );
     }
 
     download_csv = () => {
@@ -45,13 +48,15 @@ class MainForm extends Component {
       }
 
     geocode_adres = async (all) => {
+        let geocoder = this.state.geocoders.find(e => e['id'] == this.state.geocoder);
+        if(!geocoder){  throw 'Geocoder not found' }
         this.setState({buzzy: true });
+
         let rows = this.props.rows;
         let huisnr = document.getElementById('huisnr').value;
         let straat = document.getElementById('straatnaam').value;
         let pc = document.getElementById('pc').value;
         let gemeente = document.getElementById('gemeente').value;
-        let geocoder = this.state.geocoder;
         let crs = this.state.crs;
         let idx_range = Array(rows.length).keys()
 
@@ -59,20 +64,8 @@ class MainForm extends Component {
           if (!rows[idx].selected && !all) { continue }
 
           let row = rows[idx].data
-          let loc = null;
-         
-          if(geocoder === 'ar'){ 
-              loc = await geocode_ar(row[straat], row[huisnr], row[pc], row[gemeente], crs);
-          } 
-          else if (geocoder === 'osm') {
-              loc = await geocode_osm(row[straat], row[huisnr], row[pc], row[gemeente], crs);
-          }
-          else if (geocoder  === 'ant'){
-              loc = await geocode_ant(row[straat], row[huisnr], row[pc], row[gemeente], crs);
-          }
-          else {
-              loc = await geocode_adres(row[straat], row[huisnr], row[pc], row[gemeente], crs);
-          }
+          let loc = await geocoder['callback'](row[straat], row[huisnr], row[pc], row[gemeente], crs);
+
           if (loc != null) {
             rows[idx].data.status = loc.status;
             rows[idx].data.x = loc.x;
@@ -157,10 +150,10 @@ class MainForm extends Component {
         </table>
 
         <div id='tools'>
-            <button onClick={() => this.geocode_adres(1)} disabled={this.state.buzzy} title='Alles geocoderen' > 
+            <button onClick={() => this.geocode_adres(true)} disabled={this.state.buzzy} title='Alles geocoderen' > 
                 <FaSearchPlus size={14} />&nbsp;Alles Geocoderen
             </button>
-            <button onClick={() => this.geocode_adres(0)} disabled={this.state.buzzy} title='Selectie geocoderen' > 
+            <button onClick={() => this.geocode_adres(false)} disabled={this.state.buzzy} title='Selectie geocoderen' > 
                 <FaSearchLocation size={14} />&nbsp;Selectie Geocoderen
             </button>
             <button onClick={() => this.props.onSave() } disabled={this.state.buzzy} title='Opslaan' > 
@@ -175,14 +168,10 @@ class MainForm extends Component {
             <label htmlFor="geolocator">&nbsp;Geocoder:&nbsp;</label>
             <select name="geolocator" id="geolocator" onChange={this.geocoderChanged}
                     value={this.state.geocoder} disabled={this.state.buzzy} >
-                <option key='geolocator1' value='ar'
-                     title='Beperkt tot Vlaanderen' >Vlaams Adressenregister</option>
-                <option key='geolocator2' value='osm'
-                     title='Beperkt tot België' >Openstreetmap Nominatim</option>
-                <option key='geolocator3' value='ant' 
-                     title='Beperkt Antwerpen' >Stad Antwerpen</option>
-                <option key='geolocator0' value='geoloc'
-                     title='Beperkt tot Vlaanderen en Brussel' >CRAB geolocation</option>
+                {this.state.geocoders.map( (e, i) => 
+                    <option key={e.id} value={e.id} title={e.title} >
+                      {e.name}</option>
+                )}
             </select>
             <label htmlFor="crsSel">&nbsp;CRS:&nbsp;</label>
             <select name="crsSel" id="crsSel" onChange={this.crsChanged}
