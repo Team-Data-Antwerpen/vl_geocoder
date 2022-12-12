@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Switch , Checkbox } from '@acpaas-ui/react-components';
 import 'regenerator-runtime/runtime';
-import { BiSelectMultiple, BiLayer } from 'react-icons/bi'
+import { BiSelectMultiple, BiLayer } from 'react-icons/bi';
 import './Table.css';
 import '@a-ui/core/dist/main.css';
 
@@ -41,11 +40,19 @@ class Table extends Component {
               return <tr key={row.id} className={ row.selected ? 'selectedrow': null }>
                 <td key={`chk${row.id}`}>
                   <div >
-                   {/* <BiLayer title='Op kaart bewerken' className='pushBtn' 
-                             onClick={() => this.props.onMapOpen(rowIdx)} />   */}
-                    <Checkbox  inline={true} 
-                        checked={row.selected} onMouseOver={e => this.drag(rowIdx, e.target)}
-                        onChange={e => this.props.onSelectionChange(rowIdx, e.target.checked)} />
+                    <div class="a-input a-input--inline">
+                      <BiLayer title='Op kaart bewerken' className='pushBtn' size={20}
+                                        onClick={() => this.props.onMapOpen(rowIdx)} /> 
+                      <div class="a-input__checkbox a-input--inline">
+                        <input type="checkbox" 
+                               id={`table-checkbox1${row.id}`} name={`table-checkbox1${row.id}`}
+                               checked={row.selected} 
+                               onChange={e => this.props.onSelectionChange(rowIdx, e.target.checked)}/>
+                        <label for={`table-checkbox1${row.id}`}>
+                          <span class="u-screen-reader-only">Select row</span></label>
+                      </div>
+                    </div>
+
                   </div>
                 </td>
   

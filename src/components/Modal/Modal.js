@@ -1,5 +1,5 @@
 import { Component } from 'react';
-//css
+import { Button } from '@acpaas-ui/react-components';
 import './Modal.css'
 
 class Modal extends Component {
@@ -34,8 +34,9 @@ class Modal extends Component {
                  {this.props.children}
               </div>
               <div className='modal-footer'>
-                <span className='modal-btn' onClick={ this.onOK }>OK</span>
-                <span className='modal-btn' onClick={ this.onCancel }>Annuleren</span>
+              
+                <Button className='modal-btn' onClick={ this.onOK }>OK</Button>
+                <Button className='modal-btn' onClick={ this.onCancel }>Annuleren</Button>
               </div>
             
             </div>

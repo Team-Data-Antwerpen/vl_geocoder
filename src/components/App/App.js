@@ -104,7 +104,7 @@ class App extends Component {
 
         <Modal visible={this.state.modelShown} onClose={this.onModelClosed} >
           <Map center={this.state.xy}  onMapClick={pt => (this.setState({ xy: pt }))} />
-        </Modal>
+        </Modal> 
 
         <Header>Geocoderen</Header>
         <MainForm columns={this.state.columns} rows={this.state.rows}
