@@ -50,7 +50,7 @@ class Table extends Component {
                 </td>
   
                 {values.map((cell, cellIdx) => <td key={`${row.id}-${cellIdx}`}>
-                  <input disabled={cellIdx < 3 ? "disabled" : ""} 
+                  <textarea disabled={cellIdx < 3 ? "disabled" : ""} 
                          className={row.data.x > 0 ? "found" : row.data.x == '' ? '' : "notfound"} 
                          onChange={() => this.props.onCellChange(`cell-${row.id}-${cellIdx}`, rowIdx, cellIdx)} type="text" id={`cell-${row.id}-${cellIdx}`} 
                          value={cell} />

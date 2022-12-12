@@ -18,17 +18,12 @@
   background-color: lightblue ;
 }
 
-#main-table td > input[type=text] {
+#main-table td > textarea {
   width: 100%;
-  padding: 1px;
-}
-
-#main-table td > input[type=checkbox] {
-  width: 14px;
-  height: 14px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-  margin-left: 5px;
+  min-height: 40px;
+  max-height: 100px;
+  min-width: 60px;
+  max-width: 200px;
 }
 
 .pushBtn {
@@ -55,7 +50,6 @@
 }
 
 #main-table th {
-  resize: horizontal;
   overflow: hidden;
 }
 
