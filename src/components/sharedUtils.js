@@ -148,6 +148,40 @@ async function geocode_adres(straat, huisnr, pc, gemeente, crs='EPSG:31370'){
     }
   }
 
+function urlExist(url){
+  return new Promise((resolve) => {
+      fetch(url)
+      .then(r => {
+        if(r.status == 200) {
+          resolve(true)
+        }
+        else {
+          resolve(false);
+        }
+      })
+      .catch(() => resolve(false) )
+  });
+
+}
+
+async function listGeocoder(){
+  let geocodeList = [
+    {'id': 'osm',  'name': 'Openstreetmap Nominatim', 
+    'title': 'Beperkt tot België', 'callback': geocode_osm},
+    {'id': 'ar',  'name': 'Vlaams Adressenregister', 
+    'title': 'Beperkt tot Vlaanderen', 'callback': geocode_ar},
+    {'id': 'geoloc',  'name': 'CRAB geolocation', 
+    'title': 'Beperkt tot Vlaanderen en Brussel', 'callback': geocode_adres},
+  ];
+  let antExist = await urlExist(
+            'https://locationpicker-app1-p.antwerpen.be/api/v2/');
+  if(antExist){
+    geocodeList.push({'id': 'ant',  'name': 'Stad Antwerpen', 
+    'title': 'Beperkt tot Antwerpen', 'callback': geocode_ant})
+  }
+  return new Promise(resolve => resolve(geocodeList) );
+}
+
 function download(filename, text) {
     let element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -158,4 +192,4 @@ function download(filename, text) {
     document.body.removeChild(element);
   }
 
-export {download, geocode_adres, geocode_ar, geocode_osm, geocode_ant }
+export {download, geocode_adres, geocode_ar, geocode_osm, geocode_ant, urlExist, listGeocoder }
