@@ -6,4 +6,5 @@
   top: 0;
   padding-left: 30px;
   text-align: left;
+  z-index: 5;
 }

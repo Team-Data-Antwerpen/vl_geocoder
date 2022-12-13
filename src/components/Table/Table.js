@@ -38,9 +38,9 @@ class Table extends Component {
             {this.props.rows.map((row, rowIdx) => {
               let values = Object.values(row.data);
               return <tr key={row.id} className={ row.selected ? 'selectedrow': null }>
-                <td key={`chk${row.id}`}>
-                  <div >
-                    <div class="a-input a-input--inline">
+                <td key={`chk${row.id}`} >
+                  <div className='actionCol'>
+                    <div className="a-input a-input--inline">
                       <BiLayer title='Op kaart bewerken' className='pushBtn' size={20}
                                         onClick={() => this.props.onMapOpen(rowIdx)} /> 
                       <div class="a-input__checkbox a-input--inline">
@@ -52,7 +52,6 @@ class Table extends Component {
                           <span class="u-screen-reader-only">Select row</span></label>
                       </div>
                     </div>
-
                   </div>
                 </td>
   

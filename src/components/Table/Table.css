@@ -69,5 +69,9 @@
 }
 
 .selBtn:active  {
-    background-color: rgb(0, 95, 13);
+  background-color: rgb(0, 95, 13);
+}
+
+.actionCol  > *  {
+  z-index: 1;
 }
