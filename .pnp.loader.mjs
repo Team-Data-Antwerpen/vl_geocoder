@@ -162,7 +162,7 @@ async function getSource$1(urlString, context, defaultGetSource) {
   if ((url == null ? void 0 : url.protocol) !== `file:`)
     return defaultGetSource(urlString, context, defaultGetSource);
   return {
-    source: await fs.promises.readFile(fileURLToPath(url), `utf8`), shortCircuit: true
+    source: await fs.promises.readFile(fileURLToPath(url), `utf8`)
   };
 }
 
@@ -226,7 +226,7 @@ async function resolve$1(originalSpecifier, context, defaultResolver) {
     resultURL.hash = url.hash;
   }
   return {
-    url: resultURL.href, shortCircuit: true
+    url: resultURL.href , shortCircuit: true
   };
 }
 

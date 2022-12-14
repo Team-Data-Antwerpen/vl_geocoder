@@ -3,13 +3,12 @@ import { Header } from '../Header/Header';
 import { MainForm } from '../MainForm/MainForm';
 import { Modal } from '../Modal/Modal';
 import { Table } from '../Table/Table';
-import { Map } from '../Map/Map';
+import { LocationWidget } from '../Map/Map';
 import React, { Component } from 'react';
 import {transform} from 'ol/proj';
-
-import {getInitialRows, saveRowState, saveSettings, initSettings} from '../persistent'
-//css
+import {getInitialRows, saveRowState, saveSettings, initSettings} from '../persistent';
 import './App.css';
+
 
 class App extends Component {
   constructor(props) {
@@ -75,11 +74,9 @@ class App extends Component {
     let rows = this.state.rows;
     let x = parseFloat( rows[rowIdx].data.x);
     let y = parseFloat( rows[rowIdx].data.y);
-    console.log(x,y)
     if( !isNaN(x) && !isNaN(y)  ){
-      let xy = transform([x,y], crs, 'EPSG:3857');
+      let xy = transform([x,y], crs, 'EPSG:4326');
       this.setState({xy: xy})
-      console.log(this.state.xy)
     }
     this.setState({ modelShown: true, selected: rowIdx })
   }
@@ -87,7 +84,8 @@ class App extends Component {
   onModelClosed = ok => {
     if (ok) {
       let crs = document.getElementById('crsSel').value;
-      let xy = transform(this.state.xy, 'EPSG:3857', crs);
+      let xy = transform(this.state.xy, 'EPSG:4326', crs);
+      console.log(this.state.xy +','+ xy)
       let rows = this.state.rows;
       let rowIdx = this.state.selected;
       rows[rowIdx].data.x = xy[0];
@@ -103,14 +101,15 @@ class App extends Component {
       <div className="App">
 
         <Modal visible={this.state.modelShown} onClose={this.onModelClosed} >
-          <Map center={this.state.xy}  onMapClick={pt => (this.setState({ xy: pt }))} />
+              <LocationWidget onLocationSelect={
+                              r => this.setState({ xy: [r.position.wgs84.lng , r.position.wgs84.lat ] }) }
+                              locationLayers={[]} initialLocation={[51.22673,4.40397]} className="map-widget" />
         </Modal> 
 
         <Header>Geocoderen</Header>
         <MainForm columns={this.state.columns} rows={this.state.rows}
                   onHandleNewFile={this.onHandle_NewFile}
-                  onGeocode={this.onGeocode}
-                  onSave={this.onSave} />
+                  onGeocode={this.onGeocode} onSave={this.onSave} />
 
         <Table selectAll={this.selectAll} 
                columns={this.state.columns} 

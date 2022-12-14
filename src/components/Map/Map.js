@@ -1,9 +1,16 @@
 import React, { Component } from "react";
+import ReactDOM from 'react-dom';
 import {initMap, viewer, marker} from './initMap';
 
 //css
 import 'ol/ol.css'; 
 import './Map.css';
+
+const LocationWidget = window.auiEmbeddableWidgets.reactComponent(
+    "https://widgets.antwerpen.be/definitions/location-picker-v2.json",
+    { React, ReactDOM }, {}
+  )
+
 
 class Map extends Component {
     constructor(props) {
@@ -38,4 +45,4 @@ class Map extends Component {
     }
 }
 
-export {Map}; 
+export {Map, LocationWidget}; 
