@@ -201,10 +201,10 @@ class MainForm extends Component {
             <div className="a-input__wrapper a-input__wrapper--inline">
             <select name="crsSel" id="crsSel" onChange={this.crsChanged}
                     value={this.state.crs} disabled={this.state.buzzy} >
-                <option key='WGS 1984 (lat/long)' value='EPSG:4326'>WGS 1984 (lat/long)</option>
-                <option key='Belgisch Lambert 1972' value='EPSG:31370'>Belgisch Lambert 1972</option>
-                <option key='Belgisch Lambert 2008' value='EPSG:3812'>Belgisch Lambert 2008</option>
-                <option key='Webmercator' value='EPSG:3857'>Webmercator</option>
+                <option key='WGS 1984 (lat/long)' title="Zoals in google maps" value='EPSG:4326'>WGS 1984 (lat/long)</option>
+                <option key='Belgisch Lambert 1972' title="Zoals in stad in kaart of geopunt" value='EPSG:31370'>Belgisch Lambert 1972</option>
+                <option key='Belgisch Lambert 2008' title="Zoals bij NGI" value='EPSG:3812'>Belgisch Lambert 2008</option>
+                <option key='Webmercator' title="Achterliggende projectie van google maps" value='EPSG:3857'>Webmercator</option>
                 </select>
               </div>    
           </span>

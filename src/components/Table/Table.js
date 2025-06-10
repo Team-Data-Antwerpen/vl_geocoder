@@ -43,13 +43,13 @@ class Table extends Component {
                     <div className="a-input a-input--inline">
                       <BiLayer title='Op kaart bewerken' className='pushBtn' size={20}
                                         onClick={() => this.props.onMapOpen(rowIdx)} /> 
-                      <div class="a-input__checkbox a-input--inline">
+                      <div className="a-input__checkbox a-input--inline">
                         <input type="checkbox" 
                                id={`table-checkbox1${row.id}`} name={`table-checkbox1${row.id}`}
                                checked={row.selected} 
                                onChange={e => this.props.onSelectionChange(rowIdx, e.target.checked)}/>
-                        <label for={`table-checkbox1${row.id}`}>
-                          <span class="u-screen-reader-only">Select row</span></label>
+                        <label htmlFor={`table-checkbox1${row.id}`}>
+                          <span className="u-screen-reader-only">Select row</span></label>
                       </div>
                     </div>
                   </div>

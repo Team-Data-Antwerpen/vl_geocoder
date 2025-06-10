@@ -128,7 +128,7 @@ async function geocode_ar(straat, huisnr, pc, gemeente, crs='EPSG:31370'){
 async function geocode_adres(straat, huisnr, pc, gemeente, crs='EPSG:31370'){
     let q = `${straat != undefined? straat: ''} ${huisnr != undefined ? huisnr : ''} ${
                 pc != undefined? ', '+ pc : ''} ${gemeente != undefined? gemeente : ''}`;
-    const geopuntURI = "https://loc.geopunt.be/v4/Location";
+    const geopuntURI = "https://geo.api.vlaanderen.be/geolocation/v4/Location";
     let r = await fetch( `${geopuntURI}?q=${encodeURIComponent(q)}`);
     let rjs = await r.json();
 
@@ -166,12 +166,12 @@ function urlExist(url){
 
 async function listGeocoder(){
   let geocodeList = [
+    {'id': 'geoloc',  'name': 'Adressenregister Geolocation', 
+    'title': 'Beperkt tot Vlaanderen en Brussel', 'callback': geocode_adres},
     {'id': 'osm',  'name': 'Openstreetmap Nominatim', 
     'title': 'Beperkt tot België', 'callback': geocode_osm},
-    {'id': 'ar',  'name': 'Vlaams Adressenregister', 
-    'title': 'Beperkt tot Vlaanderen', 'callback': geocode_ar},
-    {'id': 'geoloc',  'name': 'CRAB geolocation', 
-    'title': 'Beperkt tot Vlaanderen en Brussel', 'callback': geocode_adres},
+    // {'id': 'ar',  'name': 'Vlaams Adressenregister', 
+    // 'title': 'Beperkt tot Vlaanderen', 'callback': geocode_ar},
   ];
   let antExist = await urlExist(
             'https://locationpicker-app1-p.antwerpen.be/api/v2/');
