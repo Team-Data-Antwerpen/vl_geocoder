@@ -137,9 +137,20 @@ async function geocode_adres(straat, huisnr, pc, gemeente, crs='EPSG:31370'){
 
       let xy = transform([loc.Location.X_Lambert72, loc.Location.Y_Lambert72], 'EPSG:31370', crs)
       
+      let status = ''
+      if(loc.LocationType == 'basisregisters_straat'){
+        status = 'https://api.basisregisters.vlaanderen.be/v2/straatnamen/' + loc.ID;
+      }
+      else if(loc.LocationType ==  'basisregisters_gemeente'){
+        status = "https://api.basisregisters.vlaanderen.be/v2/gemeenten/" + + loc.ID;
+      }
+      else {
+        status = "https://api.basisregisters.vlaanderen.be/v2/adressen/" + + loc.ID;
+      }
+
       return {
         x: xy[0] , y: xy[1] ,
-        status: loc.LocationType,
+        status: status, //loc.LocationType, 
         adres: loc.FormattedAddress
       }
     }

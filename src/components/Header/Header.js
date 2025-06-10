@@ -1,12 +1,10 @@
 import React from 'react';
-import logo from '../../img/logo.svg';
 import	'./Header.css';
 
 const Header = props => 
     (
     <header className="o-header">
       <a href="#" className="o-header__logo">
-            <img src={logo} alt="Stad Antwerpen" />
       </a>
       <h2 className='App-title'>{props.children}</h2>
       {/* <div className="o-header__content-wrapper">
